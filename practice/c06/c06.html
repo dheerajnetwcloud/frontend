@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Event Handlers</title>
+
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+
+
+
+<body>
+    <h1>Event Handlers</h1>
+    
+    <form>
+        <input  type="text" id="input1" placeholder="Enter your name" onblur="checkInput()">
+        <button type="button" id="button1">Click Me</button>
+        <div class="error" id="feedback"></div>
+        </form> 
+
+        <br/>
+
+        <form>
+            <input  type="text" id="input2" placeholder="Enter your name" onblur="checkUserName()">
+            <button type="button" id="button2">Click Me</button>
+            <div class="error" id="feedback2"></div>
+        </form>     
+
+            <br/>
+
+            <form>
+                <input  type="text" id="input3" placeholder="Enter your name" onblur="checkUserName()">
+                <button type="button" id="button3">Click Me</button>
+                <div class="error" id="feedback3"></div>
+            </form> 
+
+            
+            <form>
+                <input  type="text" id="input4" placeholder="Enter your common name" onblur="checkUserName()">
+                <button type="button" id="button4">Click Me</button>
+                <div class="error" id="feedback4"></div>
+               
+                
+            </form>
+
+            <ul id="ul1">
+                <li>onblur</li>
+                <li>onchange</li>
+                <li>onfocus</li>
+                <li>onselect</li>
+                <li id="li1"> <a id="link1" href="#input3">test</a>onsubmit</li>   
+            </ul>
+
+
+    <script src="c06.js"></script>
+</body>
+
+</html>

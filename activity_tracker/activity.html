@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management</title>
+    <style>
+
+.form-container {
+            width: 300px;
+            margin: 20px ;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .form-container h3 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+
+        .table-container button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .table-container button:hover {
+            background-color: #45a049;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .section {
+            margin-top: 30px;
+            display: inline-block
+        }
+        table {
+            width: 800px;
+            margin-top: 20px;
+            border-collapse: collapse;
+            margin-right: 100px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        
+        .error {
+            color: red;
+        }
+        .table-container {
+            display: inline-block;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            margin: 20px;
+            margin-top: 50px;
+            float: right;
+          
+        }
+        .test{
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+  
+    <!-- Section to Create a New Entry -->
+    <div class="section">
+        <div class="form-container">
+            <h3>Create a New Entry</h3>
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <input type="text" id="category" name="category" placeholder="Category" required/>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description" placeholder="Description" required/>
+            </div>
+            <div class="form-group">
+                <label for="comments">Comments:</label>
+                <input type="text" id="comments" name="comments" placeholder="Comments" required></input>
+            </div>
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="datetime-local" id="date" placeholder="Date" required />
+            </div>
+            <div class="form-group">
+                <button  onclick="createEntry()">Submit</button>
+            </div>
+
+            <div id="createError" class="error"></div>
+        </div>
+
+       
+
+
+      
+    </div>
+
+    <div class="table-container">
+        <h3>Entries List</h3>
+        <button onclick="fetchEntries()">Load Entries</button>
+        <div id="error" class="error"></div>
+        <table id="entriesTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Comments</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+  
+
+    <!-- Section to Fetch and Display Entries -->
+   
+
+    <script>
+        // ✅ Fetch Entries (GET Request)
+        async function fetchEntries() {
+            const errorDiv = document.getElementById('error');
+            const tableBody = document.querySelector('#entriesTable tbody');
+            tableBody.innerHTML = ''; // Clear previous data
+            errorDiv.textContent = ''; // Clear error message
+
+            try {
+                const response = await fetch('http://localhost:8081/api/activities/all', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const entries = await response.json();
+
+                if (entries.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5">No entries found.</td></tr>';
+                    return;
+                }
+
+                entries.forEach(entry => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${entry.id}</td>
+                        <td>${entry.category}</td>
+                        <td>${entry.description}</td>
+                        <td>${entry.comments}</td>
+                        <td>${new Date(entry.createdAt).toISOString().split('T')[0]}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching entries:', error);
+                errorDiv.textContent = `Failed to fetch entries: ${error.message}`;
+            }
+        }
+
+        // ✅ Create an Entry (POST Request)
+        async function createEntry() {
+            const category = document.getElementById('category').value;
+            const description = document.getElementById('description').value;
+            const comments = document.getElementById('comments').value;
+            const activityDate = document.getElementById('date').value;
+            const errorDiv = document.getElementById('createError');
+            errorDiv.textContent = ''; // Clear error message
+
+            if (!category.trim() || !description.trim()) {
+                errorDiv.textContent = 'Category and Description cannot be empty.';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8081/api/activities', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        category: category,
+                        description: description,
+                        comments: comments,
+                        createdAt: activityDate
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                alert('Entry created successfully!');
+                document.getElementById('category').value = '';
+                document.getElementById('description').value = '';
+                document.getElementById('comments').value = '';
+                fetchEntries(); // Refresh the list
+            } catch (error) {
+                console.error('Error creating entry:', error);
+                errorDiv.textContent = `Failed to create entry: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

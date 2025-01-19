@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Document Object Model</title>
+</head>
+
+<style>
+    #groceryList {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 400px;
+    }
+    .hot {
+        color: red;
+        background: #4CAF50; 
+        color: #fff;
+         margin: 10px 0; 
+        padding: 15px;
+        border-radius: 5px;
+          transition: background 0.3s ease-in-out;
+    }
+    .hot:hover {
+        background: #45a049;
+    }
+    
+    .cold {
+        color: blue;
+        background: blueviolet; 
+        color: #fff;
+        margin: 10px 0; 
+        padding: 15px;
+        border-radius: 5px;
+          transition: background 1s ease-in-out;
+
+    }
+
+
+</style>
+
+<body>
+    <h2>Grocery List</h2>
+    <ul id="groceryList">
+        <li id="first" class="hot">Apples</li>
+        <li id="second" class="hot">Bananas</li>
+        <li id="third" class="hot">Carrots</li>
+        <li id="fourth" class="hot">Oranges</li>
+    </ul>
+</body>
+
+<script src="c05.js"></script>
+
+</html>

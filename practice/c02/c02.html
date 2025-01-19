@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Constructive &amp; Co.</title>
+
+  </head>
+  <body>
+    <h1>Constructive &amp; Co.</h1>
+    
+    <p>For all orders and inquiries please call
+      <em>555-3344</em></p>
+
+        <table>
+            <tr>
+                <td id="p11">5</td>
+                <td id="p12">6</td>
+                <td id="p13"></td>
+            </tr>
+            <tr>
+                <td id="p21">5</td>
+                <td id="p22">6</td>
+                <td id="p23"></td>
+            </tr>
+            <tr>
+                <td id="p31">5</td>
+                <td id="p32">hello</td>
+                <td id="p33"></td>
+            </tr>
+            <tr>
+                <td id="p41">5</td>
+                <td id="p42">hello</td>
+                <td id="p43">Colors :: </td>
+            </tr>
+
+        </table>
+
+      <script >
+
+        //Reading the value as integer
+        var a = document.getElementById('p11').textContent;
+        var b = document.getElementById('p12').textContent;
+        var c = parseInt(a) + parseInt(b);
+        document.getElementById('p13').textContent = c;
+
+        //Reading the value as string
+        var a = document.getElementById('p21').textContent;
+        var b = document.getElementById('p22').textContent;
+        var c =a + b;
+        document.getElementById('p23').textContent = c;
+
+        //Reading one value as integer and one as String
+        var a = document.getElementById('p31').textContent;
+        var b = document.getElementById('p32').textContent;
+        var c = parseInt(a) + b;
+        document.getElementById('p33').textContent = c;
+
+        var colors = ['red', 'black', 'white'];
+
+        var combineColors = "";
+
+        colors.forEach((value, index) => {
+            combineColors += value + "=>";    
+        });
+        document.getElementById('p43').textContent = combineColors;
+
+
+      </script>
+  </body>
+</html>

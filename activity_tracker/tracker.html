@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management</title>
+    <style>
+
+
+        
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 60%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .error {
+            color: red;
+        }
+        .form-container {
+            margin-top: 30px;
+        }
+        .form-container input, .form-container button {
+            margin: 5px;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Category Management</h1>
+    
+    <!-- Form to Create a Category -->
+    <div class="form-container">
+        <h2>Create a New Category</h2>
+        <input type="text" id="categoryName" placeholder="Enter Category Name" required />
+        <button onclick="createCategory()">Create Category</button>
+        <div id="createError" class="error"></div>
+    </div>
+    
+    <!-- Button to Fetch Categories -->
+    <h2>Category List</h2>
+    <button onclick="fetchCategories()">Load Categories</button>
+    <div id="error" class="error"></div>
+    <table id="categoryTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Create Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Category rows will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <script>
+        // ✅ Function to Fetch Categories (GET Request)
+        async function fetchCategories() {
+            const errorDiv = document.getElementById('error');
+            const tableBody = document.querySelector('#categoryTable tbody');
+            tableBody.innerHTML = ''; // Clear previous data
+            errorDiv.textContent = ''; // Clear error message
+
+            try {
+                const response = await fetch('http://localhost:8081/api/categories/all', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const categories = await response.json();
+
+                if (categories.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="3">No categories found.</td></tr>';
+                    return;
+                }
+
+                categories.forEach(category => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${category.id}</td>
+                        <td>${category.name}</td>
+                        <td>${new Date(category.createDate).toLocaleString()}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+                errorDiv.textContent = `Failed to fetch categories: ${error.message}`;
+            }
+        }
+
+        // ✅ Function to Create a Category (POST Request)
+        async function createCategory() {
+            const categoryName = document.getElementById('categoryName').value;
+            const errorDiv = document.getElementById('createError');
+            errorDiv.textContent = ''; // Clear error message
+
+            if (!categoryName.trim()) {
+                errorDiv.textContent = 'Category name cannot be empty.';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8081/api/categories', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: categoryName })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                alert('Category created successfully!');
+                document.getElementById('categoryName').value = ''; // Clear input field
+                fetchCategories(); // Refresh the category list
+            } catch (error) {
+                console.error('Error creating category:', error);
+                errorDiv.textContent = `Failed to create category: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

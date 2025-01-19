@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track your activity</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .todo-container {
+            max-width: 400px;
+            margin: auto;
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            margin-right: 5px;
+        }
+        button {
+            padding: 10px 15px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            text-align: left;
+            padding: 8px;
+            margin: 5px 0;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        select {
+            margin-top: 12px;
+            padding: 12px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="todo-container">
+        <h2>Keep track of the activity</h2>
+        <input type="text" id="todoInput" placeholder="Enter a task...">
+        <br/><br/>
+        <input type="text" id="todoInput" placeholder="Enter category...">
+        <br/><br/>
+
+        <select id="options" name="options">
+            <option value="option1">Badminton</option>
+            <option value="option2">Smoke</option>
+            <option value="option3">Drink</option>
+            <option value="option4">LeetCode Problem</option>
+        </select>
+        <br/><br/>
+
+
+        <button onclick="addTask()">Add</button>
+        <ul id="todoList"></ul>
+    </div>
+    <script>
+        function addTask() {
+            const input = document.getElementById('todoInput');
+            const task = input.value.trim();
+            if (task) {
+                const list = document.getElementById('todoList');
+                const listItem = document.createElement('li');
+                listItem.textContent = task;
+                list.appendChild(listItem);
+                input.value = '';
+            } else {
+                alert('Please enter a task!');
+            }
+        }
+    </script>
+</body>
+</html>
