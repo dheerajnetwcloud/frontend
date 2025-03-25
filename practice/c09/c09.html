@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation with Modernizr</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+</head>
+<body>
+
+    <button onclick="getLocation()">Get My Location</button>
+    <p id="output">Location will appear here...</p>
+
+    <script>
+        function getLocation() {
+            if (Modernizr.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        document.getElementById("output").innerHTML = 
+                            "Latitude: " + position.coords.latitude + 
+                            "<br>Longitude: " + position.coords.longitude;
+                    },
+                    function (error) {
+                        document.getElementById("output").innerHTML = "Error getting location: " + error.message;
+                    }
+                );
+            } else {
+                document.getElementById("output").innerHTML = "Geolocation is not supported in your browser.";
+            }
+        }
+    </script>
+
+</body>
+</html>

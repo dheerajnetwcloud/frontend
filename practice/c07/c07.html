@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Jquery</title>
+
+    <style>
+        .highlight {
+            margin: 5px;
+            padding: 10px;
+            color: cadetblue;
+            color: pink;
+        }
+        ul {
+            list-style-type: none;
+        }
+        
+        ul li {
+            padding : 10px;
+            margin : 5px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            width: 25%;
+        }
+        ul li:hover {
+            background-color: beige;
+            border: 1px solid #ddd;
+            width: 30%;
+            transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+        </style>
+</head>
+
+<body>
+
+    <h1>Jquery</h1>
+    <h2>Click the button to hide the first p element with a class attribute value of "test".</h2>
+
+    <ul>
+        <li>Apple</li>
+        <li>Orange</li>
+        <li>Banana</li>
+    </ul>        
+
+    <div id="newItemButton" class="newItem">
+        <button id="newItem">New Item</button>
+      </div>
+    <form>
+        <input type="text" id="newItem" placeholder="Enter New Item" required />
+        <button id="addButton">Add</button>
+    </form>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="c07.js"></script>
+    </body>
+</html>
