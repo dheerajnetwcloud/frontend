@@ -80,7 +80,7 @@
             errorDiv.textContent = ''; // Clear error message
 
             try {
-                const response = await fetch('http://localhost:8081/api/categories/all', {
+                const response = await fetch('http://localhost:8080/api/categories/all', {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json'
@@ -101,7 +101,7 @@
                 categories.forEach(category => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${category.id}</td>
+                        <td>${category.seq}</td>
                         <td>${category.name}</td>
                         <td>${new Date(category.createDate).toLocaleString()}</td>
                     `;
@@ -125,7 +125,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost:8081/api/categories', {
+                const response = await fetch('http://localhost:8080/api/categories', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
