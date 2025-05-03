@@ -200,7 +200,7 @@
             errorDiv.textContent = ''; // Clear error message
 
             try {
-                const response = await fetch('http://localhost:8081/api/activities/all', {
+                const response = await fetch('http://localhost:8080/api/activities/all', {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json'
@@ -237,11 +237,11 @@
 
         // ✅ Create an Entry (POST Request)
         async function createEntry() {
-            //const category = document.getElementById('category').value;
-            const categoryId = document.getElementById('dynamicDropdown').value;
-            alert(categoryId);
-            const category =  document.getElementById('dynamicDropdown').options[categoryId].text; 
-            alert(category);
+            const category = document.getElementById('category').value;
+           // const categoryId = document.getElementById('dynamicDropdown').value;
+           // alert(categoryId);
+           // const category =  document.getElementById('dynamicDropdown').options[categoryId].text; 
+            //alert(category);
             const description = document.getElementById('description').value;
             const comments = document.getElementById('comments').value;
             const activityDate = document.getElementById('date').value;
@@ -254,7 +254,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost:8081/api/activities', {
+                const response = await fetch('http://localhost:8080/api/activities', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -290,7 +290,7 @@
         // Fetch data from the REST service and populate the dropdown
     async function populateDropdown() {
       try {
-        var apiUrl = 'http://localhost:8081/api/categories/all';
+        var apiUrl = 'http://localhost:8080/api/categories/all';
 
         const response = await fetch(apiUrl);
         if (!response.ok) {
