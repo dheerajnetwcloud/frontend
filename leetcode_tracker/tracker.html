@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem Submission</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="url"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #content {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #content div {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        #content p {
+            margin: 5px 0;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #ddd;
+            margin: 10px 0;
+        }
+    </style>
+    <script>
+        let currentPage = 1; // Track the current page
+        const pageSize = 5; // Number of items per page
+
+        // Function to fetch and display content with pagination
+        async function fetchContent(page = 0 ){
+            try {
+                const response = await fetch(`http://localhost:8080/api/leetcode/trackers?page=${page}&size=${pageSize}`); // Replace with your GET API URL
+                const data = await response.json();
+                const contentDiv = document.getElementById('content');
+                contentDiv.innerHTML = '';
+
+                if (data.content && data.content.length > 0) {
+                    data.content.forEach(item => {
+                        const div = document.createElement('div');
+                        div.innerHTML = `
+                            <p><strong>Problem URL:</strong> ${item.problem}</p>
+                            <p><strong>Description:</strong> ${item.description}</p>
+                            <p><strong>Status:</strong> ${item.status}</p>
+                            <p><strong>Category:</strong> ${item.category}</p>
+                            <hr>
+                        `;
+                        contentDiv.appendChild(div);
+                    });
+                } else {
+                    contentDiv.innerHTML = '<p>No problems found.</p>';
+                }
+
+                // Update pagination buttons
+                //document.getElementById('prevButton').disabled = page <= 1;
+                //document.getElementById('nextButton').disabled = !data.hasMore; // Assuming the API returns a `hasMore` flag
+                currentPage = page;
+            } catch (error) {
+                console.error('Error fetching content:', error);
+            }
+        }
+
+        // Function to handle form submission
+        async function handleSubmit(event) {
+            event.preventDefault();
+
+            const problem = document.getElementById('problem').value;
+            const description = document.getElementById('description').value;
+            const status = document.getElementById('status').value;
+            const category = document.getElementById('category').value;
+
+            const payload = { problem, description, status, category };
+
+            try {
+                const response = await fetch('http://localhost:8080/api/leetcode', { // Replace with your POST API URL
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                if (response.ok) {
+                    alert('Problem submitted successfully!');
+                    fetchContent(); // Refresh the content after submission
+                } else {
+                    alert('Failed to submit the problem.');
+                }
+            } catch (error) {
+                console.error('Error submitting problem:', error);
+            }
+        }
+
+        // Function to handle "Next" button click
+        function nextPage() {
+            fetchContent(currentPage + 1);
+        }
+
+        // Function to handle "Previous" button click
+        function prevPage() {
+            if (currentPage > 1) {
+                fetchContent(currentPage - 1);
+            }
+        }
+
+       /*
+        const eventSource = new EventSource("http://localhost:8080/sse");
+
+eventSource.onmessage = function(event) {
+  const output = document.getElementById("output");
+  output.innerHTML += `<p>${event.data}</p>`;
+}; */
+
+
+        // Fetch content on page load
+        window.onload = () => fetchContent();
+
+
+
+
+    </script>
+</head>
+<body>
+
+    <h1>Number of Problems</h1>
+    <div id="noofproblems"></div>
+
+    <h1>Submit a Problem</h1>
+    <form id="problemForm" onsubmit="handleSubmit(event)">
+        <label for="problem">Problem URL:</label>
+        <input type="url" id="problem" name="problem" required>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" rows="4" cols="50" required></textarea>
+
+        <label for="status">Status:</label>
+        <select id="status" name="status" required>
+            <option value="PENDING">PENDING</option>
+            <option value="COMPLETED">COMPLETED</option>
+            <option value="IN PROGRESS">IN PROGRESS</option>
+        </select>
+
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+            <option value="Array">Array</option>
+            <option value="Dynamic Programming">Dynamic Programming</option>
+            <option value="String">String</option>
+            <option value="LinkedList">LinkedList</option>
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>All Problems</h2>
+    <div id="content">
+        <!-- Content fetched from the GET API will be displayed here -->
+    </div>
+
+    <!-- Pagination controls -->
+    <div style="text-align: center; margin-top: 20px;">
+      <!---->  <button id="prevButton" onclick="prevPage()">Previous</button>
+        <button id="nextButton" onclick="nextPage()">Next</button>
+    </div>
+</body>
+</html>

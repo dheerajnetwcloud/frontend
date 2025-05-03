@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SSE Client</title>
+</head>
+<body>
+  <h2>Server Events</h2>
+  <div id="output"></div>
+
+  <script>
+    const eventSource = new EventSource("http://localhost:8080/sse");
+
+    eventSource.onmessage = function(event) {
+      const output = document.getElementById("output");
+      output.innerHTML += `<p>${event.data}</p>`;
+    };
+
+    eventSource.onerror = function(err) {
+      console.error("EventSource failed:", err);
+    };
+  </script>
+</body>
+</html>
