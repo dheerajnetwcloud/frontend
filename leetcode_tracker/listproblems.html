@@ -58,6 +58,17 @@
     border-top: 1px solid #e0e0e0;
   }
 
+  .toggle-icon {
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 14px;
+    color: #c8cecf;
+  }
+
+  .toggle-icon:hover {
+    color: #007BFF;
+  }
+
   /* Smooth transition for showing/hiding rows */
   .expand-content {
     padding: 10px;
@@ -82,6 +93,7 @@
         <th>Category</th>
         <th>Status</th>
         <th>Actions</th>
+        <th>Desc</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -101,12 +113,13 @@
       const row = document.createElement('tr');
 
       row.innerHTML = `
-        <td>${user.problem || ''}</td>
+       <td> <a href="${user.link || '#'}" target="_blank">${user.problem || ''}</a> </td>
         <td contenteditable="false">${user.category || ''}</td>
         <td contenteditable="false">${user.status || ''}</td>
         <td>
           <button class="edit-btn" onclick="editRow(this)">Edit</button>
         </td>
+        <td> <span class="toggle-icon" onclick="toggleExpandRow(this)">&#9660;</span></td
       `;
       tbody.appendChild(row);
     }
@@ -119,34 +132,49 @@
       row.setAttribute('data-id', user.id);
       
       row.innerHTML = `
-        <td>${user.problem}</td>
+       <td> <a href="${user.problem || '#'}" target="_blank">${user.problem || ''}</a> </td>
+       
         <td>${user.category}</td>
         <td>${user.status}</td>
         <td>
           <button class="edit-btn" onclick="editRow(this)">Edit</button>
+
         </td>
+        <td> <span class="toggle-icon" onclick="toggleExpandRow(this)">&#9660;</span></td
       `;
 
       // Expandable detail row (initially hidden)
       const expandRow = document.createElement('tr');
       expandRow.classList.add('expand-row', 'hidden');
-      const colSpan = 4; // Number of table columns
+      const colSpan = 5; // Number of table columns
       expandRow.innerHTML = `
         <td colspan="${colSpan}">
   
-          ${user.description}
+          ${user.description || 'No description available.'}
     
         </td>
       `;
 
+      /*
       // Toggle visibility on click
       row.addEventListener('click', () => {
         expandRow.classList.toggle('hidden');
-      });
+      }); */
 
       tbody.appendChild(row);
       tbody.appendChild(expandRow);
     }
+
+    function toggleExpandRow(icon) {
+    const row = icon.closest('tr');
+    const expandRow = row.nextElementSibling;
+
+    if (expandRow && expandRow.classList.contains('expand-row')) {
+      expandRow.classList.toggle('hidden');
+      // Toggle the icon between down and up arrows
+      icon.innerHTML = expandRow.classList.contains('hidden') ? '&#9660;' : '&#9650;';
+    }
+  }
 
 
     function editRow(btn) {
@@ -233,9 +261,6 @@
       `;
       expandRow.querySelectorAll('td')[0].setAttribute('contenteditable', 'true');
       tbody.appendChild(expandRow);
-      lastRow.addEventListener('click', () => {
-        expandRow.classList.toggle('hidden');
-      });
     }
 
     fetchData();
