@@ -78,7 +78,7 @@
   <table id="userTable">
     <thead>
       <tr>
-        <th>Problem</th>
+        <th>Name</th>
         <th>Category</th>
         <th>Status</th>
         <th>Actions</th>
@@ -89,7 +89,7 @@
 
   <script>
   //  const API_URL = 'http://localhost:8080/api/leetcode/all'; // Sample REST API
-     const API_URL = 'http://3.213.63.209:8082/api/leetcode'; // Sample REST API
+     const API_URL = 'http://3.213.63.209:8082/api/leetcode/all'; // Sample REST API
     async function fetchData() {
       const res = await fetch(API_URL);
       const users = await res.json();
