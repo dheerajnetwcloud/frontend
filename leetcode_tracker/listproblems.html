@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Editable Table with REST API</title>
+  <title>LeetCode Tracker</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -14,12 +15,13 @@
       width: 100%;
       border-collapse: collapse;
       background-color: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       border-radius: 8px;
       overflow: hidden;
     }
 
-    th, td {
+    th,
+    td {
       padding: 8px 10px;
       text-align: left;
       border-bottom: 1px solid #e0e0e0;
@@ -43,53 +45,67 @@
     }
 
     .hidden {
-    display: none;
-  }
+      display: none;
+    }
 
-  /* Style for the expandable row */
-  .expand-row {
-    background-color: #f9f9f9;
-    transition: all 0.3s ease-in-out;
-  }
+    /* Style for the expandable row */
+    .expand-row {
+      background-color: #f9f9f9;
+      transition: all 0.3s ease-in-out;
+    }
 
-  /* Optional: Add padding and border for the expanded content */
-  .expand-row td {
-    padding: 10px;
-    border-top: 1px solid #e0e0e0;
-  }
+    /* Optional: Add padding and border for the expanded content */
+    .expand-row td {
+      padding: 10px;
+      border-top: 1px solid #e0e0e0;
+    }
 
-  .toggle-icon {
-    cursor: pointer;
-    margin-left: 10px;
-    font-size: 14px;
-    color: #c8cecf;
-  }
+    .toggle-icon {
+      cursor: pointer;
+      margin-left: 10px;
+      font-size: 14px;
+      color: #c8cecf;
+    }
 
-  .toggle-icon:hover {
-    color: #007BFF;
-  }
+    .toggle-icon:hover {
+      color: #007BFF;
+    }
 
-  /* Smooth transition for showing/hiding rows */
-  .expand-content {
-    padding: 10px;
-    font-size: 14px;
-    color: #333;
-  }
+    /* Smooth transition for showing/hiding rows */
+    .expand-content {
+      padding: 10px;
+      font-size: 14px;
+      color: #333;
+    }
 
-    .edit-btn { background-color: #ffc107; color: white; }
-    .save-btn { background-color: #28a745; color: white; }
-    .add-btn { background-color: #17a2b8; color: white; margin-bottom: 10px; }
+    .edit-btn {
+      background-color: #ffc107;
+      color: white;
+    }
+
+    .save-btn {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .add-btn {
+      background-color: #17a2b8;
+      color: white;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
+
 <body>
 
-  <h2>User List</h2>
+  <h2>Problem List</h2>
   <button class="add-btn" onclick="addRow()">+ Add New</button>
 
   <table id="userTable">
     <thead>
       <tr>
         <th><b>Name</b></th>
+        <th><b>Link</b></th>
         <th>Category</th>
         <th>Status</th>
         <th>Actions</th>
@@ -100,81 +116,67 @@
   </table>
 
   <script>
-  //  const API_URL = 'http://localhost:8080/api/leetcode/all'; // Sample REST API
-     const API_URL = 'http://3.213.63.209:8082/api/leetcode/all'; // Sample REST API
+    //  const API_URL = 'http://localhost:8080/api/leetcode/all'; // Sample REST API
+    const API_URL = 'http://3.213.63.209:8082/api/leetcode/all'; // Sample REST API
     async function fetchData() {
       const res = await fetch(API_URL);
       const users = await res.json();
       users.forEach(addExpandableRow); // Limit to 5 users for demo
     }
 
-    function addRowToTable(user) {
-      const tbody = document.querySelector('#userTable tbody');
-      const row = document.createElement('tr');
-
-      row.innerHTML = `
-       <td> <a href="${user.link || '#'}" target="_blank">${user.problem || ''}</a> </td>
-        <td contenteditable="false">${user.category || ''}</td>
-        <td contenteditable="false">${user.status || ''}</td>
-        <td>
-          <button class="edit-btn" onclick="editRow(this)">Edit</button>
-        </td>
-        <td> <span class="toggle-icon" onclick="toggleExpandRow(this)">&#9660;</span></td
-      `;
-      tbody.appendChild(row);
+  
+    function addExpandableRow(user) {
+      addRowToTable(user); // Add the main data row
+      addHiddenRow(user); // Add the hidden row for description
     }
 
-    function addExpandableRow(user) {
+    function addRowToTable(user) {
       const tbody = document.querySelector('#userTable tbody');
 
       // Main data row
       const row = document.createElement('tr');
       row.setAttribute('data-id', user.id);
-      
+
+      if (user.status === 'Done') {
+        row.style.backgroundColor = '#fff3cd'; // Light green background for "Done" status
+      } else {
+        row.style.backgroundColor = '#f8d7da'; // Light red background for "Not Started" status
+      }
+
       row.innerHTML = `
-       <td> <a href="${user.problem || '#'}" target="_blank">${user.problem || ''}</a> </td>
-       
-        <td>${user.category}</td>
-        <td>${user.status}</td>
-        <td>
-          <button class="edit-btn" onclick="editRow(this)">Edit</button>
+      <td> <a href="${user.problem || '#'}" target="_blank">${user.name || ''}</a> </td>
+      <td>${user.problem}</td>
+      <td>${user.category}</td>
+      <td>${user.status}</td>
+      <td> <button class="edit-btn" onclick="editRow(this)">Edit</button> </td>
+      <td> <span class="toggle-icon" onclick="toggleExpandRow(this)">&#9660;</span></td
+       `;
+      tbody.appendChild(row);
+    }
 
-        </td>
-        <td> <span class="toggle-icon" onclick="toggleExpandRow(this)">&#9660;</span></td
-      `;
-
-      // Expandable detail row (initially hidden)
+    function addHiddenRow(user) {
+      const tbody = document.querySelector('#userTable tbody');
       const expandRow = document.createElement('tr');
       expandRow.classList.add('expand-row', 'hidden');
       const colSpan = 5; // Number of table columns
       expandRow.innerHTML = `
         <td colspan="${colSpan}">
-  
           ${user.description || 'No description available.'}
-    
         </td>
       `;
-
-      /*
-      // Toggle visibility on click
-      row.addEventListener('click', () => {
-        expandRow.classList.toggle('hidden');
-      }); */
-
-      tbody.appendChild(row);
       tbody.appendChild(expandRow);
     }
 
     function toggleExpandRow(icon) {
-    const row = icon.closest('tr');
-    const expandRow = row.nextElementSibling;
+      const row = icon.closest('tr');
+      const expandRow = row.nextElementSibling;
 
-    if (expandRow && expandRow.classList.contains('expand-row')) {
-      expandRow.classList.toggle('hidden');
-      // Toggle the icon between down and up arrows
-      icon.innerHTML = expandRow.classList.contains('hidden') ? '&#9660;' : '&#9650;';
+      if (expandRow && expandRow.classList.contains('expand-row')) {
+        expandRow.classList.toggle('hidden');
+        // Toggle the icon between down and up arrows
+        icon.innerHTML = expandRow.classList.contains('hidden') ? '&#9660;' : '&#9650;';
+      }
     }
-  }
 
 
     function editRow(btn) {
@@ -188,18 +190,21 @@
         btn.textContent = 'Edit';
         btn.className = 'edit-btn';
 
-            const id = row.getAttribute('data-id');
-            const problem = cells[0].textContent; 
-            const description = nextRowCells[0].textContent;
-            const category = cells[1].textContent;
-            const status = cells[2].textContent;
+        const id = row.getAttribute('data-id');
+        const name = cells[0].textContent;
+        const problem = cells[1].textContent;
+        const description = nextRowCells[0].textContent;
+        const category = cells[2].textContent;
+        const status = cells[3].textContent;
 
         cells[0].setAttribute('contenteditable', 'false');
         cells[1].setAttribute('contenteditable', 'false');
         cells[2].setAttribute('contenteditable', 'false');
+        cells[3].setAttribute('contenteditable', 'false');
         nextRowCells[0].setAttribute('contenteditable', 'false');
 
         const updatedUser = {
+          name: name,
           id: id,
           problem: problem,
           description: description,
@@ -209,24 +214,24 @@
         console.log('Saving user:', updatedUser);
 
         try {
-                const response =  fetch('http://3.213.63.209:8082/api/leetcode', { // Replace with your POST API URL
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(updatedUser),
-                });
+          const response = fetch('http://3.213.63.209:8082/api/leetcode', { // Replace with your POST API URL
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedUser),
+          });
 
-                console.log('Response:', response);
-
-        
-            } catch (error) {
-                console.error('Error submitting problem:', error);
-            }
+          console.log('Response:', response);
 
 
+        } catch (error) {
+          console.error('Error submitting problem:', error);
+        }
 
-       //  fetch(`http://localhost:8080/api/leetcode`, { method: 'PUT', body: JSON.stringify(updatedUser), headers: {'Content-Type': 'application/json'} })
+
+
+        //  fetch(`http://localhost:8080/api/leetcode`, { method: 'PUT', body: JSON.stringify(updatedUser), headers: {'Content-Type': 'application/json'} })
 
       } else {
         btn.textContent = 'Save';
@@ -234,6 +239,7 @@
         cells[0].setAttribute('contenteditable', 'true');
         cells[1].setAttribute('contenteditable', 'true');
         cells[2].setAttribute('contenteditable', 'true');
+        cells[3].setAttribute('contenteditable', 'true');
         nextRowCells[0].setAttribute('contenteditable', 'true');
       }
     }
@@ -241,7 +247,7 @@
     function addRow() {
 
       const tbody = document.querySelector('#userTable tbody');
-      addRowToTable({ problem: '', category: '', status: '' });
+      addRowToTable({ problem: '', category: '', status: '', description: '' }); // Add a new empty row
       const lastRow = document.querySelector('#userTable tbody tr:last-child');
       const editBtn = lastRow.querySelector('button');
       editBtn.textContent = 'Save';
@@ -249,22 +255,19 @@
       lastRow.querySelectorAll('td')[0].setAttribute('contenteditable', 'true');
       lastRow.querySelectorAll('td')[1].setAttribute('contenteditable', 'true');
       lastRow.querySelectorAll('td')[2].setAttribute('contenteditable', 'true');
+      lastRow.querySelectorAll('td')[3].setAttribute('contenteditable', 'true');
 
 
-      const expandRow = document.createElement('tr');
-      expandRow.classList.add('expand-row', 'hidden');
-      const colSpan = 4; // Number of table columns
-      expandRow.innerHTML = `
-        <td colspan="${colSpan}">
-    
-        </td>
-      `;
-      expandRow.querySelectorAll('td')[0].setAttribute('contenteditable', 'true');
-      tbody.appendChild(expandRow);
+     
+      addHiddenRow({ description: '' }); // Add a new empty row for description
+      const lastHiddenRow = document.querySelector('#userTable tbody tr:last-child');
+      lastHiddenRow.querySelectorAll('td')[0].setAttribute('contenteditable', 'true');
+
     }
 
     fetchData();
   </script>
 
 </body>
+
 </html>

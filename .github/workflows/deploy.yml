@@ -24,4 +24,5 @@ jobs:
             cd /home/ec2-user/frontend-app/frontend  # or wherever your app lives
             git pull origin main
             sudo cp /home/ec2-user/frontend-app/frontend/leetcode_tracker/listproblems.html  /usr/share/nginx/html/leetcode_tracker/
+            sudo cp /home/ec2-user/frontend-app/frontend/todo/todo.html  /usr/share/nginx/html/todo/
           EOF
