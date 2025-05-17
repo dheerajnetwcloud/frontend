@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Stylish TODO List</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -87,7 +88,7 @@
       left: 0;
       height: 100%;
       background: #28a745;
-      width: 0%;
+      width: var(--progress-width, 0%);
       transition: width 0.3s ease;
     }
   </style>
@@ -119,8 +120,8 @@
   
 
   <script>
-    //const API_URL = "http://localhost:8080/api/todos"; // 🔁 Replace with your actual backend URL
-    const API_URL = "http://3.213.63.209:8082/api/todos"; 
+    const API_URL = "http://localhost:8080/api/todos"; // 🔁 Replace with your actual backend URL
+   // const API_URL = "http://3.213.63.209:8082/api/todos"; 
     // Function to fetch and display tasks
     async function loadTasks() {
       try {
@@ -140,18 +141,41 @@
             li.classList.toggle("done", checkbox.checked);
             updateTask(task.id, checkbox.checked); // Update task status
           };
+          li.setAttribute("data-id", task.id); 
 
           const span = document.createElement("span");
           span.textContent = task.task;
 
+          const deleteSpan = document.createElement("span");
+          deleteSpan.innerHTML = '&nbsp;&nbsp;&nbsp;<i class="fas fa-xmark" onclick="deleteRow(this)" margin-left: 4px; style="color: red; cursor: pointer;"></i>';
+         
+          deleteSpan.innerHTML =`&nbsp;&nbsp;<span onclick="deleteRow(this)" style="cursor: pointer; color: red;"> <i class="fas fa-xmark"></i> </span>`
+
           li.classList.toggle("done", task.done);
           li.appendChild(checkbox);
           li.appendChild(span);
+          li.appendChild(deleteSpan);
           taskList.appendChild(li);
         });
+        updateProgress(tasks)
       } catch (err) {
         console.error("❌ Error loading tasks:", err);
       }
+    }
+
+    function deleteRow(element) {
+        console.log("Delete icon clicked");
+      const li = element.parentElement.parentElement;
+      const taskId = li.getAttribute("data-id"); // Assuming you have a data-id attribute for the task ID
+
+      fetch(`${API_URL}/${taskId}`, {
+        method: "DELETE"
+      })
+        .then(response => {
+          if (!response.ok) throw new Error("Failed to delete task");
+          loadTasks(); // Reload tasks after deletion
+        })
+        .catch(err => console.error("❌ Error deleting task:", err));
     }
 
     // Function to add a new task
@@ -202,24 +226,26 @@
     // Load tasks when the page is loaded
     document.addEventListener("DOMContentLoaded", loadTasks);
 
-    function updateProgress() {
+    function updateProgress(tasks) {
       const now = new Date();
       const startOfWeek = new Date(now);
       startOfWeek.setDate(now.getDate() - now.getDay());
 
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-      const weeklyTasks = tasks.filter(t => new Date(t.createdAt) >= startOfWeek);
-      const monthlyTasks = tasks.filter(t => new Date(t.createdAt) >= startOfMonth);
+      const weeklyTasks = tasks.filter(t => new Date(t.date) >= startOfWeek);
+      const monthlyTasks = tasks.filter(t => new Date(t.date) >= startOfMonth);
 
       const weeklyDone = weeklyTasks.filter(t => t.done).length;
       const monthlyDone = monthlyTasks.filter(t => t.done).length;
 
       const weeklyRate = weeklyTasks.length ? (weeklyDone / weeklyTasks.length) * 100 : 0;
       const monthlyRate = monthlyTasks.length ? (monthlyDone / monthlyTasks.length) * 100 : 0;
-
-      document.querySelector("#weeklyProgress::after")?.style.setProperty("width", weeklyRate + "%");
-      document.querySelector("#monthlyProgress::after")?.style.setProperty("width", monthlyRate + "%");
+      
+        document.querySelector("#monthlyProgress").style.setProperty("--progress-width", monthlyRate + "%");
+       document.querySelector("#weeklyProgress").style.setProperty("--progress-width", weeklyRate + "%");
+      //document.querySelector("#weeklyProgress::after")?.style.setProperty("width", weeklyRate + "%");
+      //document.querySelector("#monthlyProgress::after")?.style.setProperty("width", monthlyRate + "%");
     }
   </script>
 
