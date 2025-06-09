@@ -96,20 +96,19 @@
     }
 
     .awesome-link {
-    color: #245791;                 /* Bright blue color */
-    text-decoration: none;         /* Remove underline */
-    font-weight: bold;             /* Bold text */
+    color: #73504c;                 /* Bright blue color */
+    text-decoration: none;         /* Remove underline */             /* Bold text */
     border-bottom: 2px solid transparent; /* Add animated underline */
     transition: all 0.3s ease;     /* Smooth hover effect */
   }
 
   .awesome-link:hover {
-    color: #0056d2;                /* Darker blue on hover */
+    color: #73504c;                /* Darker blue on hover */
 letter-spacing: 0.5px;         /* Subtle letter spacing on hover */
   }
 
   .pretty-url {
-    color: #0066cc;
+    color: #73504c;
     text-decoration: none;
     font-weight: 600;
     border-bottom: 2px solid transparent;
@@ -122,10 +121,241 @@ letter-spacing: 0.5px;         /* Subtle letter spacing on hover */
     border-bottom: 2px solid #004999;
   }
 
+
+  .form-container {
+      max-width: 100%;
+      margin: auto;
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: flex-end;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    input, select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      height: 34px;
+      padding: 0 20px;
+      background-color: #73504c;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      background-color: #3730a3;
+    }
+
+    .message {
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    .success { color: green; }
+    .error { color: red; }
+ 
+
+    .table {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .table-header,
+    .table-row {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      padding: 4px 10px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+       border-left: 6px solid #73504c; /* green accent */
+       border: 1px solid #73504c;
+    }
+
+    .table-header {
+      background-color: #e5e7eb;
+      font-weight: bold;
+    }
+
+    .cell {
+      flex: 1;
+      padding: 6px 10px;
+      overflow-wrap: break-word;
+    }
+
+    .cell.name { flex: 2; }
+    .cell.desc {
+       flex: 5; 
+       white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    max-width: 250px; /* Adjust as needed */
+    transition: all 0.2s;
+
+    }
+     .cell.desc.expanded {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    background: #f9f9f9;
+    z-index: 2;
+    position: relative;
+  } 
+    .cell.actions {
+      flex: 1;
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn.edit {
+      background-color: #7d7271;
+      color: white;
+    }
+
+    .btn.delete {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    .table-row.done-row {
+  border: 1px solid #10b981; /* green border */
+  border-left: 6px solid #10b981; /* green accent */
+}
+
+    .btn.edit:hover { background-color: #2563eb; }
+    .btn.delete:hover { background-color: #dc2626; }
+
+    @media (max-width: 768px) {
+      .table-header, .table-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .cell.actions {
+        justify-content: flex-start;
+      }
+    }
+  
   </style>
 </head>
 
 <body>
+
+ <form class="form-container" id="problemForm">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="problem">Problem</label>
+        <input type="text" id="problem" name="problem" placeholder="Problem name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="url">Problem URL</label>
+        <input type="url" id="url" name="url" placeholder="URL" required>
+      </div>
+
+      <div class="form-group">
+        <label for="category">Category</label>
+        <select id="category" name="category" required>
+          <option value="">-- Category --</option>
+          <option value="DP">DP</option>
+          <option value="String">String</option>
+          <option value="LinkedList">LinkedList</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" name="status" required>
+          <option value="">-- Status --</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+
+      <button type="submit">Add</button>
+    </div>
+
+    <div class="message" id="message"></div>
+  </form>
+  
+  <br><br>
+   <div class="table" id ="problemTable">
+    <div class="table-header">
+      <div class="cell name">Name</div>
+      <div class="cell">Category</div>
+      <div class="cell">Status</div>
+      <div class="cell desc">Desc</div>
+      <div class="cell actions">Actions</div>
+    </div>
+
+    <div class="table-row">
+      <div class="cell name">Two Sum</div>
+      <div class="cell">DP</div>
+      <div class="cell">Active</div>
+      
+      <div class="cell desc">Find two numbers that add up to target.</div>
+      <div class="cell actions">
+        <button class="btn edit">Edit</button>
+        </div>
+    </div>
+
+    <div class="table-row">
+      <div class="cell name">Reverse Linked List</div>
+      <div class="cell">LinkedList</div>
+      <div class="cell">Inactive</div>
+        <div class="cell desc">Reverse a singly linked list.</div>
+      <div class="cell actions">
+        <button class="btn edit">Edit</button>
+      </div>
+    
+    </div>
+    
+    <!-- Add more rows as needed -->
+  </div>
+
+
+
 
   <h2>Problem List</h2>
   <button class="add-btn" onclick="addRow()">+ Add New</button>
@@ -134,7 +364,7 @@ letter-spacing: 0.5px;         /* Subtle letter spacing on hover */
     <thead>
       <tr>
         <th><b>Name</b></th>
-        <th><b>Link</b></th>
+        <th class="hidden"><b>Link</b></th>
         <th>Category</th>
         <th>Status</th>
         <th>Actions</th>
@@ -146,7 +376,7 @@ letter-spacing: 0.5px;         /* Subtle letter spacing on hover */
 
   <script>
     //  const API_URL = 'http://localhost:8080/api/leetcode/all'; // Sample REST API
-    const API_URL = 'http://3.213.63.209:8082/api/leetcode/all'; // Sample REST API
+    const API_URL = 'http://[2600:1f18:2ec0:293d:e892:767e:d75f:b7d0]:8082/api/leetcode/all'; // Sample REST API
     async function fetchData() {
       const res = await fetch(API_URL);
       const users = await res.json();
@@ -155,8 +385,61 @@ letter-spacing: 0.5px;         /* Subtle letter spacing on hover */
 
   
     function addExpandableRow(user) {
+      addRowtoDiv(user); // Add the main data row
       addRowToTable(user); // Add the main data row
       addHiddenRow(user); // Add the hidden row for description
+    }
+
+    function addRowtoDiv(user){
+      //add table-row to the table
+     
+      const tbody = document.querySelector('#problemTable');
+  const row = document.createElement('div');
+  row.classList.add('table-row');
+  if(user.status === 'Done') {
+    row.classList.add('done-row'); // Add class for "Done" status
+  }
+  row.setAttribute('data-id', user.id);
+  row.setAttribute('data-url', user.problem || ''); // Store name for editing
+
+  // Name cell
+  const nameDiv = document.createElement('div');
+  nameDiv.className = 'cell name';
+  nameDiv.innerHTML =  `<a href="${user.problem || '#'}" target="_blank" class ="awesome-link">${user.name || ''}</a>`;
+
+  // Category cell
+  const categoryDiv = document.createElement('div');
+  categoryDiv.className = 'cell';
+  categoryDiv.textContent = user.category || '';
+
+  // Status cell
+  const statusDiv = document.createElement('div');
+  statusDiv.className = 'cell';
+  statusDiv.textContent = user.status || '';
+
+  // Description cell with click-to-expand
+  const descDiv = document.createElement('div');
+  descDiv.className = 'cell desc';
+  descDiv.textContent = user.description || 'No description available.';
+  descDiv.title = user.description || 'No description available.';
+  descDiv.onclick = function() {
+    descDiv.classList.toggle('expanded');
+  };
+
+  // Actions cell
+  const actionsDiv = document.createElement('div');
+  actionsDiv.className = 'cell actions';
+  actionsDiv.innerHTML = `<button class="btn edit" onclick="editDivRow(this)">Edit</button>`;
+
+  // Append all cells to the row
+  row.appendChild(nameDiv);
+  row.appendChild(categoryDiv);
+  row.appendChild(statusDiv);
+  row.appendChild(descDiv);
+  row.appendChild(actionsDiv);
+
+
+      tbody.appendChild(row);
     }
 
     function addRowToTable(user) {
@@ -174,7 +457,7 @@ letter-spacing: 0.5px;         /* Subtle letter spacing on hover */
 
       row.innerHTML = `
       <td> <a href="${user.problem || '#'}" target="_blank" class ="awesome-link">${user.name || ''}</a> </td>
-      <td class="pretty-url">${user.problem}</td>
+      <td class="pretty-url hidden">${user.problem}</td>
       <td>${user.category}</td>
       <td>${user.status}</td>
       <td> <button class="edit-btn" onclick="editRow(this)">Edit</button> </td>
@@ -243,7 +526,7 @@ letter-spacing: 0.5px;         /* Subtle letter spacing on hover */
         console.log('Saving user:', updatedUser);
 
         try {
-          const response = fetch('http://3.213.63.209:8082/api/leetcode', { // Replace with your POST API URL
+          const response = fetch('http://[2600:1f18:2ec0:293d:e892:767e:d75f:b7d0]:8082/api/leetcode', { // Replace with your POST API URL
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -293,6 +576,94 @@ letter-spacing: 0.5px;         /* Subtle letter spacing on hover */
       lastHiddenRow.querySelectorAll('td')[0].setAttribute('contenteditable', 'true');
 
     }
+
+    const form = document.getElementById('problemForm');
+const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const data = {
+        name: form.problem.value.trim(),
+        problem: form.url.value.trim(),
+        category: form.category.value,
+        description: name,
+        status: form.status.value
+      };
+
+    
+      try {
+        const res = await fetch('http://[2600:1f18:2ec0:293d:e892:767e:d75f:b7d0]:8082/api/leetcode', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          message.textContent = "✅ Problem added successfully!";
+          message.className = "message success";
+          form.reset();
+        } else {
+          const errorData = await res.json();
+          message.textContent = "❌ Error: " + (errorData.message || "Could not add problem.");
+          message.className = "message error";
+        }
+      } catch (err) {
+        message.textContent = "❌ Network error.";
+        message.className = "message error";
+      }
+    });
+
+    function editDivRow(btn) {
+  const row = btn.closest('.table-row');
+  const cells = row.querySelectorAll('.cell:not(.actions)'); // Exclude actions cell
+  const isEditing = btn.textContent === 'Save';
+
+  if (isEditing) {
+    // Save: make cells non-editable and change button text
+    cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
+    btn.textContent = 'Edit';
+    btn.className = 'btn edit';
+    
+    const data = {
+        id: row.getAttribute('data-id'),
+        name: cells[0].textContent.trim(),
+        problem: row.getAttribute('data-url'),
+        category: cells[1].textContent.trim(),
+        status: cells[2].textContent.trim(),
+        description: cells[3].textContent.trim()
+      };
+
+    
+      try {
+        const res =  fetch('http://[2600:1f18:2ec0:293d:e892:767e:d75f:b7d0]:8082/api/leetcode', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          message.textContent = "✅ Problem added successfully!";
+          message.className = "message success";
+          form.reset();
+        } else {
+          const errorData =  res.json();
+          message.textContent = "❌ Error: " + (errorData.message || "Could not add problem.");
+          message.className = "message error";
+        }
+      } catch (err) {
+        message.textContent = "❌ Network error.";
+        message.className = "message error";
+      }
+
+  } else {
+    // Edit: make cells editable and change button text
+    cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
+    btn.textContent = 'Save';
+    btn.className = 'btn save-btn';
+  }
+}
+
 
     fetchData();
   </script>
