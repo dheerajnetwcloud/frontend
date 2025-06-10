@@ -318,6 +318,36 @@ letter-spacing: 0.5px;         /* Subtle letter spacing on hover */
 
     <div class="message" id="message"></div>
   </form>
+
+  <br><br>
+
+  <form class="form-container" id="filterForm" style="margin-bottom: 24px;">
+  <div class="form-row">
+    <div class="form-group">
+      <label for="filterName">Name</label>
+      <input type="text" id="filterName" name="filterName" placeholder="Filter by name">
+    </div>
+    <div class="form-group">
+      <label for="filterCategory">Category</label>
+      <select id="filterCategory" name="filterCategory">
+        <option value="">-- All Categories --</option>
+        <option value="DP">DP</option>
+        <option value="String">String</option>
+        <option value="LinkedList">LinkedList</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="filterStatus">Status</label>
+      <select id="filterStatus" name="filterStatus">
+        <option value="">-- All Status --</option>
+        <option value="Open">Open</option>
+        <option value="Done">Done</option>
+      </select>
+    </div>
+    <button type="submit">Filter</button>
+    <button type="button" id="clearFilterBtn">Clear</button>
+  </div>
+</form>
   
   <br><br>
    <div class="table" id ="problemTable">
@@ -341,8 +371,37 @@ letter-spacing: 0.5px;         /* Subtle letter spacing on hover */
     async function fetchData() {
       const res = await fetch(API_URL);
       const users = await res.json();
-      users.forEach(addExpandableRow); // Limit to 5 users for demo
+       const nameVal = document.getElementById('filterName').value.trim().toLowerCase();
+  const catVal = document.getElementById('filterCategory').value;
+  const statusVal = document.getElementById('filterStatus').value;
+
+  // Remove all rows except the header
+  //const table = document.getElementById('problemTable');
+  //table.querySelectorAll('.table-row').forEach(row => row.remove());
+
+  users
+    .filter(user =>
+      (nameVal === "" || (user.name && user.name.toLowerCase().includes(nameVal))) &&
+      (catVal === "" || user.category === catVal) &&
+      (statusVal === "" || user.status === statusVal)
+    )
+    .forEach(addExpandableRow);
+
+
+
+     // users.forEach(addExpandableRow); // Limit to 5 users for demo
     }
+
+    document.getElementById('filterForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  fetchData();
+});
+
+document.getElementById('clearFilterBtn').addEventListener('click', function() {
+  document.getElementById('filterName').value = "";
+  document.getElementById('filterCategory').value = "";
+  document.getElementById('filterStatus').value = "";
+});
 
   
     function addExpandableRow(user) {
@@ -401,43 +460,7 @@ letter-spacing: 0.5px;         /* Subtle letter spacing on hover */
       tbody.appendChild(row);
     }
 
-    function addRowToTable(user) {
-      const tbody = document.querySelector('#userTable tbody');
-
-      // Main data row
-      const row = document.createElement('tr');
-      row.setAttribute('data-id', user.id);
-
-      if (user.status === 'Done') {
-        row.style.backgroundColor = '#fff3cd'; // Light green background for "Done" status
-      } else {
-        row.style.backgroundColor = '#f8d7da'; // Light red background for "Not Started" status
-      }
-
-      row.innerHTML = `
-      <td> <a href="${user.problem || '#'}" target="_blank" class ="awesome-link">${user.name || ''}</a> </td>
-      <td class="pretty-url hidden">${user.problem}</td>
-      <td>${user.category}</td>
-      <td>${user.status}</td>
-      <td> <button class="edit-btn" onclick="editRow(this)">Edit</button> </td>
-      <td> <span class="toggle-icon" onclick="toggleExpandRow(this)">&#9660;</span></td
-       `;
-      tbody.appendChild(row);
-    }
-
-    function addHiddenRow(user) {
-      const tbody = document.querySelector('#userTable tbody');
-      const expandRow = document.createElement('tr');
-      expandRow.classList.add('expand-row', 'hidden');
-      const colSpan = 5; // Number of table columns
-      expandRow.innerHTML = `
-        <td colspan="${colSpan}">
-          ${user.description || 'No description available.'}
-        </td>
-      `;
-      tbody.appendChild(expandRow);
-    }
-
+ 
     function toggleExpandRow(icon) {
       const row = icon.closest('tr');
       const expandRow = row.nextElementSibling;
@@ -513,27 +536,6 @@ letter-spacing: 0.5px;         /* Subtle letter spacing on hover */
         cells[3].setAttribute('contenteditable', 'true');
         nextRowCells[0].setAttribute('contenteditable', 'true');
       }
-    }
-
-    function addRow() {
-
-      const tbody = document.querySelector('#userTable tbody');
-      addRowToTable({ problem: '', category: '', status: '', description: '' }); // Add a new empty row
-      const lastRow = document.querySelector('#userTable tbody tr:last-child');
-      const editBtn = lastRow.querySelector('button');
-      editBtn.textContent = 'Save';
-      editBtn.className = 'save-btn';
-      lastRow.querySelectorAll('td')[0].setAttribute('contenteditable', 'true');
-      lastRow.querySelectorAll('td')[1].setAttribute('contenteditable', 'true');
-      lastRow.querySelectorAll('td')[2].setAttribute('contenteditable', 'true');
-      lastRow.querySelectorAll('td')[3].setAttribute('contenteditable', 'true');
-
-
-     
-      addHiddenRow({ description: '' }); // Add a new empty row for description
-      const lastHiddenRow = document.querySelector('#userTable tbody tr:last-child');
-      lastHiddenRow.querySelectorAll('td')[0].setAttribute('contenteditable', 'true');
-
     }
 
     const form = document.getElementById('problemForm');
@@ -624,7 +626,7 @@ const message = document.getElementById('message');
 }
 
 
-    fetchData();
+    //fetchData();
   </script>
 
 </body>

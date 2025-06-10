@@ -95,7 +95,7 @@
 </head>
 <body>
 
-  <h1>📝TODO</h1>
+  <h1>📝Do it Today!!</h1>
 
   <div class="todo-container">
     <div class="task-input">
@@ -103,13 +103,18 @@
       <button onclick="addTask()">Add</button>
     </div>
     <ul id="taskList"></ul>
+    <div style="margin-bottom: 10px;">
+  <label>
+    <input type="checkbox" id="todayOnlyCheckbox" onchange="loadTasks()"> Show only today’s tasks
+  </label>
+</div>
     <br> <br>
     <div class="progress-tracking">
-        <h2>📊 Progress</h2>
-        <p>Weekly Completion:</p>
+        <h2>📊 I need 100% Today!!</h2>
+        <p>Daily Completion:</p>
         <div id="weeklyProgress" class="bar"></div>
-        <p>Monthly Completion:</p>
-        <div id="monthlyProgress" class="bar"></div>
+    <!--    <p>Monthly Completion:</p>
+        <div id="monthlyProgress" class="bar"></div> -->
       </div>
   </div>
  
@@ -120,14 +125,25 @@
   
 
   <script>
-    const API_URL = "http://localhost:8080/api/todos"; // 🔁 Replace with your actual backend URL
+    const API_URL = "http://[2600:1f18:2ec0:293d:e892:767e:d75f:b7d0]:8082/api/todos"; // 🔁 Replace with your actual backend URL
    // const API_URL = "http://3.213.63.209:8082/api/todos"; 
     // Function to fetch and display tasks
     async function loadTasks() {
       try {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error("Failed to fetch tasks");
-        const tasks = await response.json();
+        let tasks = await response.json();
+
+         const todayOnly = document.getElementById("todayOnlyCheckbox")?.checked;
+  
+        if (todayOnly) {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      tasks = tasks.filter(task => {
+        // If your backend returns a 'date' field, use it. Otherwise, skip this filter.
+        if (!task.date) return false;
+        return task.date.slice(0, 10) === todayStr;
+      });
+    }
 
         const taskList = document.getElementById("taskList");
         taskList.innerHTML = ""; // Clear the task list
@@ -204,6 +220,7 @@
 
       // Clear input
       input.value = "";
+     
     }
 
     // Function to update task status
@@ -242,7 +259,7 @@
       const weeklyRate = weeklyTasks.length ? (weeklyDone / weeklyTasks.length) * 100 : 0;
       const monthlyRate = monthlyTasks.length ? (monthlyDone / monthlyTasks.length) * 100 : 0;
       
-        document.querySelector("#monthlyProgress").style.setProperty("--progress-width", monthlyRate + "%");
+      //  document.querySelector("#monthlyProgress").style.setProperty("--progress-width", monthlyRate + "%");
        document.querySelector("#weeklyProgress").style.setProperty("--progress-width", weeklyRate + "%");
       //document.querySelector("#weeklyProgress::after")?.style.setProperty("width", weeklyRate + "%");
       //document.querySelector("#monthlyProgress::after")?.style.setProperty("width", monthlyRate + "%");
